@@ -1,44 +1,57 @@
-import React, { useState, useEffect } from "react";
-import BookRating from "./BookRating";
+
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAuthorKey, setAuthorData } from './redux/authorSlice';
+import BookRating from './BookRating';
 
 export default function AuthorBooks() {
-  const [author_Works, setAuthorWorks] = useState([]);
-  const [author, setAuthor] = useState("");
-  const [User_Input, setName] = useState("");
-  const [Author_Key, setKey] = useState("");
+  const [User_Input, setName] = useState('');
+  const dispatch = useDispatch();
+  const authorKey = useSelector((state) => state.author.authorKey);
+  const authorWorks = useSelector((state) => state.author.authorWorks);
+  const authorName = useSelector((state) => state.author.authorName);
 
   const handleSearch = () => {
+    dispatch(setAuthorKey(''));
+  
     const authorSearchUrl = `https://openlibrary.org/search/authors.json?q=${User_Input}`;
-
-    fetch(authorSearchUrl, { method: "GET" })
+  
+    fetch(authorSearchUrl, { method: 'GET' })
       .then((response) => response.json())
       .then((data) => {
         if (data.docs.length > 0) {
-          setKey(data.docs[0].key);
-        } else {
-          setKey("");
+          dispatch(setAuthorKey({ key: data.docs[0].key, name: data.docs[0].name }));
         }
       });
   };
-
+  
   useEffect(() => {
-    const authorWorksUrl = `https://openlibrary.org/authors/${Author_Key}/works.json?limit=100`;
-    const authorUrl = `https://openlibrary.org/authors/${Author_Key}.json`;
-
-    if (Author_Key) {
-      fetch(authorWorksUrl, { method: "GET" })
-        .then((response) => response.json())
-        .then((data) => {
-          setAuthorWorks(data.entries);
-        });
-
-      fetch(authorUrl, { method: "GET" })
-        .then((response) => response.json())
-        .then((data) => {
-          setAuthor(data.personal_name);
-        });
-    }
-  }, [Author_Key]);
+    const fetchData = () => {
+      if (authorKey && authorKey.key) {
+        const authorWorksUrl = `https://openlibrary.org/authors/${authorKey.key}/works.json?limit=100`;
+        const authorUrl = `https://openlibrary.org/authors/${authorKey.key}.json`;
+  
+        Promise.all([
+          fetch(authorWorksUrl, { method: 'GET' }),
+          fetch(authorUrl, { method: 'GET' }),
+        ])
+          .then(([worksResponse, authorResponse]) => Promise.all([worksResponse.json(), authorResponse.json()]))
+          .then(([worksData, authorData]) => {
+            if (worksData.entries && authorData.personal_name) {
+              dispatch(
+                setAuthorData({
+                  authorWorks: worksData.entries,
+                  authorName: authorData.personal_name,
+                })
+              );
+            }
+          });
+      }
+    };
+  
+    fetchData();
+  }, [dispatch, authorKey]);
+  
 
   return (
     <div>
@@ -52,9 +65,9 @@ export default function AuthorBooks() {
       </label>
       <button onClick={handleSearch}>Search</button>
 
-      
+      {authorName && (
         <>
-          <h1>{author}'s Books</h1>
+          <h1>{authorName}'s Books</h1>
           <div className="table-container">
             <table>
               <thead>
@@ -64,7 +77,7 @@ export default function AuthorBooks() {
                 </tr>
               </thead>
               <tbody>
-                {author_Works.map((work) => (
+                {authorWorks.map((work) => (
                   <tr key={work.key}>
                     <td>{work.title}</td>
                     <td>
@@ -76,7 +89,7 @@ export default function AuthorBooks() {
             </table>
           </div>
         </>
-      
+      )}
     </div>
   );
 }

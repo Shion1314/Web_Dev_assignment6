@@ -1,0 +1,42 @@
+{
+  "homepage": "https://Shion1314.github.io/Web_Dev_assignment6",
+  "dependencies": {
+    "localforage": "^1.10.0",
+    "match-sorter": "^6.3.1",
+    "react": "^18.0.0",
+    "react-colorful": "^5.6.1",
+    "react-dom": "^18.0.0",
+    "react-router-dom": "^6.19.0",
+    "react-scripts": "^5.0.0",
+    "react-simple-star-rating": "^5.1.7",
+    "react-tiny-popover": "^8.0.4",
+    "sort-by": "^1.2.0"
+  },
+  "main": "/index.js",
+  "devDependencies": {
+    "gh-pages": "^6.0.0"
+  },
+  "name": "vy6j3f",
+  "description": "",
+  "version": "0.0.0",
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

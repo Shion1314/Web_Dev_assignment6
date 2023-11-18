@@ -1,6 +1,6 @@
 
 .table-container {
-  max-height: 50vh; /* 25% of the viewport height */
+ /*max-height: 50vh; /* 25% of the viewport height */
   overflow: auto;
 }
 

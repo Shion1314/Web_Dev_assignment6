@@ -1,12 +1,28 @@
 import React, { useState, useEffect } from "react";
 import BookRating from "./BookRating";
 
-export default function AuthorBooks({ Author_Key }) {
+export default function AuthorBooks() {
   const [author_Works, setAuthorWorks] = useState([]);
   const [author, setAuthor] = useState("");
+  const [User_Input, setName] = useState("");
+  const [Author_Key, setKey] = useState("");
+
+  const handleSearch = () => {
+    const authorSearchUrl = `https://openlibrary.org/search/authors.json?q=${User_Input}`;
+
+    fetch(authorSearchUrl, { method: "GET" })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.docs.length > 0) {
+          setKey(data.docs[0].key);
+        } else {
+          setKey("");
+        }
+      });
+  };
 
   useEffect(() => {
-    const authorWorksUrl = `https://openlibrary.org/authors/${Author_Key}/works.json?limit=10`;
+    const authorWorksUrl = `https://openlibrary.org/authors/${Author_Key}/works.json?limit=100`;
     const authorUrl = `https://openlibrary.org/authors/${Author_Key}.json`;
 
     if (Author_Key) {
@@ -23,9 +39,20 @@ export default function AuthorBooks({ Author_Key }) {
         });
     }
   }, [Author_Key]);
+
   return (
     <div>
-      {author && (
+      <label>
+        Enter Author's Name:
+        <input
+          type="text"
+          value={User_Input}
+          onChange={(event) => setName(event.target.value)}
+        />
+      </label>
+      <button onClick={handleSearch}>Search</button>
+
+      
         <>
           <h1>{author}'s Books</h1>
           <div className="table-container">
@@ -49,7 +76,7 @@ export default function AuthorBooks({ Author_Key }) {
             </table>
           </div>
         </>
-      )}
+      
     </div>
   );
 }

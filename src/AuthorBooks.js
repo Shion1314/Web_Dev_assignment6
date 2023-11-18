@@ -52,7 +52,7 @@ export default function AuthorBooks() {
       </label>
       <button onClick={handleSearch}>Search</button>
 
-      {author && (
+      
         <>
           <h1>{author}'s Books</h1>
           <div className="table-container">
@@ -76,7 +76,7 @@ export default function AuthorBooks() {
             </table>
           </div>
         </>
-      )}
+      
     </div>
   );
 }

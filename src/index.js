@@ -4,6 +4,7 @@ import * as ReactDOM from "react-dom/client";
 import ErrorPage from "./error_page"
 import Home from "./Home"
 import AuthorBooks from "./AuthorBooks"
+import "./styles.css";
 
 const router = createBrowserRouter([
   {
